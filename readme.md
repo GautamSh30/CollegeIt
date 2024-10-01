@@ -32,8 +32,21 @@ Create a .env file in the root directory and configure the following environment
 
 ```bash
 PORT=3000
+```
+
+If you are using openai api then use -
+
+```bash
 OPENAI_API_KEY=your-openai-api-key
 ```
+
+If you are using gemini api then use -
+
+```bash
+GEMINI_API_KEY=your-gemini-api-key
+```
+
+If you're facing any problem then feel free to use my api_key
 
 ### 5. Run the development server
 
@@ -44,3 +57,7 @@ npm start
 ```
 
 The application will be running on http://localhost:3000.
+
+# Screenshot
+
+<img src="./ss.png">

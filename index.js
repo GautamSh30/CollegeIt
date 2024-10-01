@@ -1,26 +1,43 @@
 import express from "express";
 import dotenv from "dotenv";
-import { OpenAI } from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const openai = new OpenAI({ OPENAI_API_KEY });
+const apiKey = process.env.GEMINI_API_KEY;
+const modelId = "gemini-1.5-flash";
 
 app.post("/complete-text", async (req, res) => {
   const { prompt } = req.body;
+
+  if (!prompt) {
+    return res.status(400).json({ error: "Prompt is required" });
+  }
+
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: prompt }],
-    });
-    const completion = response.choices[0].text.trim();
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: modelId });
+    const result = await model.generateContent(prompt);
+
+    let completion = result.response.text();
+    const maxLength = prompt.length + 50;
+
+    if (completion.length > maxLength) {
+      const truncatedIndex = completion.lastIndexOf(" ", maxLength);
+      if (truncatedIndex > -1) {
+        completion = completion.substring(0, truncatedIndex) + "...";
+      } else {
+        completion = completion.substring(0, maxLength) + "...";
+      }
+    }
+
     res.status(200).json({ completion: completion });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error generating completion:", error);
+    res.status(500).json({ error: "Failed to generate text completion" });
   }
 });
 
