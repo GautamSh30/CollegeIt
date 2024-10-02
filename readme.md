@@ -46,8 +46,6 @@ If you are using gemini api then use -
 GEMINI_API_KEY=your-gemini-api-key
 ```
 
-If you're facing any problem then feel free to use my api_key
-
 ### 5. Run the development server
 
 Start the server by running:
